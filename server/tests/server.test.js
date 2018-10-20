@@ -12,6 +12,22 @@ beforeEach((done) => {
   });
   
 });
+describe('GET /todos',()=>{
+  it('Should list all todos',(done)=>{
+    request(app)
+      .get('/todos')
+      .expect(200)
+      .expect((res)=>{
+        expect(res.body.todos.length).toBe(docCount);
+      })
+      .end((err,res)=>{
+        if(err){
+          return done(err);
+        }
+        done();
+      });
+  });
+});
 
 describe('POST /todos', () => {
   it('should create a new todo', (done) => {
