@@ -1,5 +1,7 @@
 const expect = require('expect');
 const request = require('supertest');
+const {ObjectID} = require('mongodb');
+
 
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
@@ -7,7 +9,6 @@ let docCount;
 beforeEach((done) => {
   Todo.count({},(err,count)=>{
     docCount =count;
-    console.log(docCount);
     done();
   });
   
@@ -27,8 +28,39 @@ describe('GET /todos',()=>{
         done();
       });
   });
+ 
 });
-
+describe('GET /todos/:id',()=>{
+  
+  it('Should return a todo',(done)=>{
+    Todo.find().then((todos)=>{
+      if(todos.length > 0){
+        let todo = todos[0];
+        request(app)
+        .get(`/todos/${todo._id.toHexString()}`)
+        .expect(200)
+        .expect((res)=>{
+          expect(res.body.todo.text).toBe(todo.text);
+        })
+        .end(done);
+      }
+    }).catch((e)=>console.log(e));
+  });
+  it('Should return 404 if todo not found',(done)=>{
+    let hexId = new ObjectID().toHexString();
+    request(app)
+      .get(`/todos/${hexId}`)
+      .expect(404)
+      .end(done);
+  });
+  it('Should return 404 invalid id',(done)=>{
+   
+    request(app)
+      .get(`/todos/123`)
+      .expect(404)
+      .end(done);
+  });
+});
 describe('POST /todos', () => {
   it('should create a new todo', (done) => {
     var text = 'Test todo text';
