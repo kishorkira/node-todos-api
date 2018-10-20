@@ -5,6 +5,23 @@ const {ObjectID} = require('mongodb');
 
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
+
+// const todos = [{
+//   _id: new ObjectID(),
+//   text: 'First test todo'
+// }, {
+//   _id: new ObjectID(),
+//   text: 'Second test todo',
+//   completed: true,
+//   completedAt: 333
+// }];
+
+// beforeEach((done) => {
+//   Todo.remove({}).then(() => {
+//     return Todo.insertMany(todos);
+//   }).then(() => done());
+// });
+
 let docCount;
 beforeEach((done) => {
   Todo.count({},(err,count)=>{
@@ -122,7 +139,6 @@ describe('PATCH /todos/:id',()=>{
           expect(res.body.todo._id).toBe(todo._id.toHexString());
           expect(res.body.todo.completed).toBe(false);
           expect(res.body.todo.completedAt).toBe(null);
-
         })
         .end(done);
       }
