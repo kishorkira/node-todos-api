@@ -121,7 +121,7 @@ describe('PATCH /todos/:id',()=>{
         .expect(200)
         .expect((res)=>{
           expect(res.body.todo._id).toBe(todo._id.toHexString());
-          expect(res.body.todo.completed).toBe(true)
+          expect(res.body.todo.completed).toBe(true);
         })
         .end(done);
       }
