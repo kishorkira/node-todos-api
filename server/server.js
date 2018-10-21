@@ -20,12 +20,16 @@ app.get('/',(req,res)=>{
 app.post('/users',(req,res)=>{
    let user = _.pick(req.body,['email','password']); 
    let newUser = new User(user);
-   newUser.save().then((user)=>{
-       if(!user){
-           return res.status(404).send();
-       }
-       res.send({user});
-   }).catch((e)=>{
+   newUser.save().then(()=>{
+    //    if(!user){
+    //        return res.status(404).send();
+    //    }
+       return newUser.generateAuthToken();
+   })
+   .then((token)=>{
+        res.header('x-auth',token).send({newUser});
+   })
+   .catch((e)=>{
        res.status(400).send(e);
    });
 });
