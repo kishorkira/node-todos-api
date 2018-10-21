@@ -17,6 +17,18 @@ app.use(bodyParser.json());
 app.get('/',(req,res)=>{
     res.send('Welcome to todos app.');
 });
+app.post('/users',(req,res)=>{
+   let user = _.pick(req.body,['email','password']); 
+   let newUser = new User(user);
+   newUser.save().then((user)=>{
+       if(!user){
+           return res.status(404).send();
+       }
+       res.send({user});
+   }).catch((e)=>{
+       res.status(400).send(e);
+   });
+});
 
 app.post('/todos',(req,res)=>{
     let newTodo = new Todo({
